@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: gkart
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gkart-db
+          property: connectionString
+
+databases:
+  - name: gkart-db
+    databaseName: gkart
+    user: gkart
+    plan: free

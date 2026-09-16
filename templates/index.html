@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Common Ground | Your local marketplace</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header>
+		<a class="logo" href="#">gKart<i>.</i></a>
+		<div class="header-note mono">A marketplace for your neighborhood</div>
+	</header>
+	<main>
+		<section class="intro">
+			<div><h1 class="curved-headline" aria-label="Local things. Real people."><span class="headline-line"><span class="curved-letter">L</span><span class="curved-letter">o</span><span class="curved-letter">c</span><span class="curved-letter">a</span><span class="curved-letter">l</span><span class="curved-letter space"> </span><span class="curved-letter">t</span><span class="curved-letter">h</span><span class="curved-letter">i</span><span class="curved-letter">n</span><span class="curved-letter">g</span><span class="curved-letter">s</span><span class="curved-letter">.</span></span><span class="headline-line"><span class="curved-letter">R</span><span class="curved-letter">e</span><span class="curved-letter">a</span><span class="curved-letter">l</span><span class="curved-letter space"> </span><span class="curved-letter">p</span><span class="curved-letter">e</span><span class="curved-letter">o</span><span class="curved-letter">p</span><span class="curved-letter">l</span><span class="curved-letter">e</span><span class="curved-letter">.</span></span></h1><p class="intro-copy">Discover the makers, growers, and independent shops that give your neighborhood its character.</p></div>
+			<div class="location mono"><span></span> Built for everywhere local</div>
+		</section>
+		<section class="choices" aria-labelledby="role-question">
+			<div class="question"><div class="mono">Choose your path</div><strong id="role-question">How would you like to enter?</strong></div>
+			<button class="choice customer" data-role="customer"><div class="shape"></div><h2>I'm a<br>customer.</h2><p>Find thoughtful goods from people making them close to home.</p><span class="choice-arrow">Explore local shops <b>↘</b></span></button>
+			<button class="choice vendor" data-role="vendor"><div class="shape"></div><h2>I'm a<br>vendor.</h2><p>Put your work in front of neighbors who care where it comes from.</p><span class="choice-arrow">Join the marketplace <b>↗</b></span></button>
+			<p class="fine-print">You can switch between spaces at any time. No wrong door.</p>
+		</section>
+	</main>
+	<section class="guest-view" id="guestView" aria-label="Guest marketplace">
+		<div class="customer-home" id="customerHome" aria-label="Customer home page">
+			<section class="video-intro" id="videoIntro" aria-label="How local orders work">
+				<video class="video-intro-media" autoplay muted loop playsinline poster="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1600" aria-label="Customer ordering on a phone while a vendor prepares the order">
+					<source src="/static/customer-order.mp4" type="video/mp4">
+				</video>
+				<div class="video-intro-shade"></div>
+				<div class="video-intro-copy">
+					<span class="mono">A local order, start to finish</span>
+					<h1>From their phone<br>to your hands.</h1>
+					<p>Customers discover something nearby, place an order, and vendors get the signal to make it happen.</p>
+				</div>
+				<button class="video-intro-next" id="videoIntroNext" type="button" aria-label="Slide video away and enter homepage">
+					<span class="mono">Enter gKart</span><strong aria-hidden="true">&#8594;</strong>
+				</button>
+			</section>
+			<nav class="customer-nav" aria-label="Customer navigation">
+				<div class="customer-nav-links">
+					<a class="active" href="#customerHome">Home</a>
+					<a href="#customerOffersPage">Offers</a>
+					<a href="#customerNearbyPage">Nearby</a>
+					<a href="#customerCart">Cart</a>
+					<a href="#customerReport">Report us</a>
+				</div>
+				<div class="customer-account-menu">
+					<button class="customer-nav-logo logo" id="customerAccountToggle" type="button" aria-expanded="false" aria-controls="customerAccountOptions">gKart<i>.</i></button>
+					<div class="customer-account-options" id="customerAccountOptions">
+						<button class="customer-logout mono" id="customerLogout" type="button">Log out</button>
+					</div>
+				</div>
+			</nav>
+			<section class="customer-home-content" aria-label="Customer marketplace highlights">
+				<div class="customer-search-panel" aria-label="Search local stores">
+					<div class="customer-search-shell">
+						<span aria-hidden="true">⌕</span>
+						<input id="customerStoreSearch" type="text" placeholder="Search stores or products" aria-label="Search stores or products">
+					</div>
+					<div class="shop-results" id="shopResults" aria-live="polite"></div>
+				</div>
+				<article class="customer-box offers-box" id="customerOffers">
+					<div class="customer-box-top"><span class="mono">Popular now</span><span class="customer-box-mark">●</span></div>
+					<h2>Stores available</h2>
+					<p>Browse every registered local shop and learn more about the people behind it.</p>
+					<div class="available-shops" id="availableShops" aria-live="polite"><p class="shop-results-status">Loading local shops...</p></div>
+					<a class="customer-box-link mono" href="#customerStoresPage">Browse stores <span aria-hidden="true">&#8594;</span></a>
+				</article>
+				<article class="customer-box products-box" id="customerNearby">
+					<div class="customer-box-top"><span class="mono">Made for you</span><span class="customer-box-mark">★</span></div>
+					<h2>According to your preference</h2>
+					<div class="customer-product-list" id="customerPreferenceList" aria-live="polite"><p class="shop-results-status">Try buying on our store to get recommendations.</p></div>
+					<a class="customer-box-link mono" href="#customerPreferencePage">Explore picks <span aria-hidden="true">&#8594;</span></a>
+				</article>
+			</section>
+			<section class="customer-stores-page" id="customerStoresPage" aria-label="All local stores">
+				<div class="customer-offers-header">
+					<div><span class="mono">The neighborhood</span><h2>All stores</h2></div>
+				</div>
+				<div class="all-stores-list" id="allStoresList" aria-live="polite"><p class="shop-results-status">Loading local shops...</p></div>
+			</section>
+			<section class="customer-preference-page" id="customerPreferencePage" aria-label="Recommended products">
+				<div class="customer-offers-header">
+					<div><span class="mono">Based on your orders</span><h2>Your picks</h2><p>Similar products from other local stores.</p></div>
+				</div>
+				<div class="customer-preference-grid" id="customerPreferencePageList" aria-live="polite"><p class="shop-results-status">Try buying on our store to get recommendations.</p></div>
+			</section>
+
+			<section class="customer-offers-page" id="customerOffersPage" aria-label="Customer offers page">
+				<div class="customer-offers-header">
+					<div>
+						<span class="mono">Today</span>
+						<h2>Offers</h2>
+					</div>
+				</div>
+				<div class="customer-offers-list" id="customerOffersList" aria-live="polite"></div>
+			</section>
+			<section class="customer-nearby-page" id="customerNearbyPage" aria-label="Customer nearby page">
+				<div class="customer-offers-header">
+					<div>
+						<span class="mono">Around you</span>
+						<h2>Nearby</h2>
+						<p id="nearbyLocationNote">Shops in your city will appear here.</p>
+					</div>
+				</div>
+				<div class="customer-nearby-list" id="nearbyShopsList" aria-live="polite"><p class="shop-results-status">Sign in to discover nearby shops.</p></div>
+			</section>
+			<section class="customer-cart-page" id="customerCart" aria-label="Customer cart page">
+				<div class="customer-offers-header">
+					<div>
+						<span class="mono">Your bag</span>
+						<h2>Cart</h2>
+					</div>
+				</div>
+				<div class="customer-cart-shell">
+					<div class="customer-cart-list" id="customerCartList" aria-live="polite"><p class="shop-results-status">Your cart is empty. Do check the products.</p></div>
+					<aside class="customer-cart-summary">
+						<span class="mono">Order summary</span>
+						<div class="customer-summary-row total"><span>Total</span><strong id="cartTotal">Rs 0.00</strong></div>
+						<button class="submit-form mono" id="openCheckout" type="button">Checkout <span>↗</span></button>
+					</aside>
+				</div>
+				<div class="customer-order-history">
+					<div class="customer-order-history-header">
+						<span class="mono">Recent activity</span>
+						<h3>Order history</h3>
+					</div>
+					<div class="customer-order-history-list" id="customerOrderHistoryList" aria-live="polite"><p class="shop-results-status">You haven't ordered anything yet... Do check the products.</p></div>
+				</div>
+			</section>
+			<section class="customer-report-page report-view" id="customerReport" aria-label="Customer report page">
+				<div class="report-heading"><div><div class="mono board-kicker">Support desk</div><h2 id="customerReportTitle">Report a problem</h2><p>Tell us what happened and we will help route it.</p></div></div>
+				<div class="chatbot-shell"><div class="chatbot-messages" id="customerChatbotMessages"></div><div class="chatbot-choices" id="customerChatbotChoices"><button type="button" data-question="bug">Report a bug</button><button type="button" data-question="spam">Report spam</button><button type="button" data-question="customer">Report a customer</button><button type="button" data-question="other">Any other</button></div><form class="comment-form" id="customerCommentForm"><label class="mono" for="customerReportComment">Your comment</label><textarea id="customerReportComment" rows="4" placeholder="Tell us what happened..." required></textarea><button class="submit-form mono" type="submit">Send comment <span>↗</span></button></form><form class="bug-form" id="customerBugForm"><label class="mono" for="customerBugComment">Bug details</label><textarea id="customerBugComment" rows="4" placeholder="Tell us what went wrong..." required></textarea><label class="mono" for="customerBugScreenshot">Screenshot</label><label class="screenshot-upload" for="customerBugScreenshot"><span class="screenshot-icon">+</span><span id="customerBugScreenshotName">Add a screenshot</span><input id="customerBugScreenshot" type="file" accept="image/*" required></label><button class="submit-form mono" type="submit">Send bug report <span>↗</span></button></form><form class="customer-form" id="customerCustomerForm"><label class="mono" for="customerReportCustomerName">Customer name</label><input id="customerReportCustomerName" type="text" placeholder="Enter customer name" required><label class="mono" for="customerReportCustomerPhone">Customer phone number</label><input id="customerReportCustomerPhone" type="tel" placeholder="Enter phone number" required><label class="mono" for="customerReportCustomerComment">What happened?</label><textarea id="customerReportCustomerComment" rows="4" placeholder="Describe what happened..." required></textarea><button class="submit-form mono" type="submit">Send customer report <span>↗</span></button></form></div>
+			</section>
+		</div>
+		<div class="static-home" aria-label="Home page">
+			<nav class="static-nav" aria-label="Home page navigation">
+				<span class="static-nav-tag mono">Your local marketplace</span>
+				<div class="static-nav-links">
+					<a class="active" href="#guestView">Home</a>
+					<a href="#salesDashboard">Dashboard</a>
+					<a href="#vendorOrders">Orders <span class="vendor-order-badge" id="vendorOrderBadge" hidden>0</span></a>
+					<a href="#reviews">Reviews</a>
+					<a href="#profile">Profile</a>
+				</div>
+				<div class="vendor-account-menu">
+					<button class="static-nav-logo logo" id="vendorAccountToggle" type="button" aria-expanded="false" aria-controls="vendorAccountOptions">gKart<i>.</i></button>
+					<div class="vendor-account-options" id="vendorAccountOptions">
+						<button class="vendor-report mono" id="vendorReport" type="button">Report</button>
+						<button class="vendor-logout mono" id="vendorLogout" type="button">Log out</button>
+					</div>
+				</div>
+			</nav>
+			<section class="product-board" aria-labelledby="boardTitle">
+				<div class="board-heading">
+					<div>
+						<div class="mono board-kicker">Your storefront</div>
+						<h1 id="boardTitle">Make room<br>for good things.</h1>
+						<p>Add your products to the shelves below. A photo, price, and optional discount are all you need.</p>
+					</div>
+					<div class="board-count"><strong id="filledCount">0</strong></div>
+				</div>
+				<div class="item-grid" id="itemGrid" aria-label="Product slots"></div>
+			</section>
+			<section class="sales-dashboard" id="salesDashboard" aria-labelledby="salesDashboardTitle">
+				<div class="sales-dashboard-title"><div><div class="mono board-kicker">Vendor analytics</div><h2 id="salesDashboardTitle">Your dashboard</h2></div></div>
+				<div class="kpi-grid"><article><span class="mono">Completed sales</span><strong id="dashboardSales">0</strong><small id="dashboardSalesNote">Paid or delivered orders</small></article><article><span class="mono">Revenue</span><strong id="dashboardRevenue">Rs 0</strong><small id="dashboardRevenueNote">From completed sales</small></article><article><span class="mono">Products listed</span><strong id="dashboardProducts">0</strong><small id="dashboardProductsNote">Items on your shelves</small></article><article><span class="mono">Pending orders</span><strong id="dashboardPending">0</strong><small id="dashboardPendingNote" class="negative">Needs attention</small></article></div>
+			</section>
+			<section class="reviews-view" id="reviews" aria-labelledby="reviewsTitle">
+				<div class="reviews-heading"><div><div class="mono board-kicker">Customer voices</div><h2 id="reviewsTitle">Reviews</h2><p>See what customers think about the things you share.</p></div></div>
+				<div class="review-empty" id="reviewEmpty"><h3>There are no reviews right now</h3><p>Customer reviews will appear here after someone shares their experience.</p></div>
+				<div class="review-list" id="reviewList"></div>
+			</section>
+			<section class="vendor-orders-view" id="vendorOrders" aria-labelledby="vendorOrdersTitle">
+				<div class="reviews-heading"><div><div class="mono board-kicker">Customer orders</div><h2 id="vendorOrdersTitle">Orders</h2><p>Confirm cash-on-delivery orders when they are successfully completed.</p></div></div>
+				<div class="vendor-orders-list" id="vendorOrdersList" aria-live="polite"><p class="shop-results-status">No orders yet.</p></div>
+			</section>
+			<section class="report-view" id="report" aria-labelledby="reportTitle">
+				<div class="report-heading"><div><div class="mono board-kicker">Support desk</div><h2 id="reportTitle">Report a problem</h2><p>Tell us what happened and we will help route it.</p></div></div>
+				<div class="chatbot-shell"><div class="chatbot-messages" id="chatbotMessages"></div><div class="chatbot-choices" id="chatbotChoices"><button type="button" data-question="bug">Report a bug</button><button type="button" data-question="spam">Report spam</button><button type="button" data-question="customer">Report a customer</button><button type="button" data-question="other">Any other</button></div><form class="comment-form" id="commentForm"><label class="mono" for="reportComment">Your comment</label><textarea id="reportComment" rows="4" placeholder="Tell us what happened..." required></textarea><button class="submit-form mono" type="submit">Send comment <span>↗</span></button></form><form class="bug-form" id="bugForm"><label class="mono" for="bugComment">Bug details</label><textarea id="bugComment" rows="4" placeholder="Tell us what went wrong..." required></textarea><label class="mono" for="bugScreenshot">Screenshot</label><label class="screenshot-upload" for="bugScreenshot"><span class="screenshot-icon">+</span><span id="bugScreenshotName">Add a screenshot</span><input id="bugScreenshot" type="file" accept="image/*" required></label><button class="submit-form mono" type="submit">Send bug report <span>↗</span></button></form><form class="customer-form" id="customerForm"><label class="mono" for="customerName">Customer name</label><input id="customerName" type="text" placeholder="Enter customer name" required><label class="mono" for="customerPhone">Customer phone number</label><input id="customerPhone" type="tel" placeholder="Enter phone number" required><label class="mono" for="customerComment">What happened?</label><textarea id="customerComment" rows="4" placeholder="Describe what happened..." required></textarea><button class="submit-form mono" type="submit">Send customer report <span>↗</span></button></form></div>
+			</section>
+			<section class="profile-view" id="profile" aria-labelledby="profileTitle">
+				<div class="profile-identity"><div class="profile-avatar" id="profileAvatar">g.</div><div><div class="mono profile-kicker">Your profile</div><h2 id="profileTitle">Your local identity</h2><p id="profileLocation">Find your local people.</p></div><button class="profile-edit-button mono" id="openProfileEdit" type="button">Edit profile</button></div>
+				<div class="profile-grid"><section class="profile-card"><span class="mono">About you</span><div class="profile-detail"><span class="detail-icon">●</span><div><small class="mono">Name</small><strong id="profileName">Your name</strong></div></div><div class="profile-detail"><span class="detail-icon">☎</span><div><small class="mono">Phone number</small><strong id="profilePhone">Not added</strong></div></div><div class="profile-detail"><span class="detail-icon">@</span><div><small class="mono">Gmail address</small><strong id="profileEmail">Private email</strong></div></div><div class="profile-detail"><span class="detail-icon">⌂</span><div><small class="mono">City</small><strong id="profileCity">Not added</strong></div></div></section><section class="profile-card profile-qr-card"><span class="mono">UPI payment QR</span><img id="profileQr" class="profile-qr" alt="Vendor UPI payment QR code"><p id="profileQrEmpty">No QR code added.</p><button class="profile-edit-button mono" id="profileQrAction" type="button">Add QR code</button></section></div>
+			</section>
+		</div>
+	</section>
+	<div class="modal-backdrop item-modal-backdrop" id="itemModal" role="dialog" aria-modal="true" aria-labelledby="itemFormTitle">
+		<div class="modal item-modal">
+			<div class="modal-header"><div><div class="mono">Shelf <span id="itemSlotNumber">01</span></div><h2 id="itemFormTitle">Add an item.</h2></div><button class="close-modal" id="closeItemModal" aria-label="Close item form">&times;</button></div>
+			<form class="account-form item-form" id="itemForm">
+				<div class="field full"><label class="mono" for="itemName">Item name</label><input id="itemName" name="itemName" type="text" placeholder="Hand-thrown breakfast mug" required></div>
+				<div class="field"><label class="mono" for="itemPrice">Price</label><input id="itemPrice" name="itemPrice" type="number" min="0" step="0.01" placeholder="24.00" required></div>
+				<div class="field"><label class="mono" for="itemDiscount">Discount <span class="optional">optional</span></label><input id="itemDiscount" name="itemDiscount" type="number" min="0" max="100" step="1" placeholder="10"></div>
+				<div class="field full"><label class="mono" for="itemDescription">Additional information <span class="optional">200 words max</span></label><textarea id="itemDescription" name="itemDescription" rows="4" maxlength="1400" placeholder="Describe your product..."></textarea></div>
+				<div class="field full photo-field"><span class="mono">Product photo</span><label class="photo-upload" for="itemPhoto"><span class="photo-frame" id="photoFrame" aria-hidden="true"><span>+</span></span><span class="photo-upload-copy"><strong>Choose a photo</strong><small id="itemPhotoName">JPG, PNG, or WEBP</small></span><input id="itemPhoto" name="itemPhoto" type="file" accept="image/*" required></label></div>
+				<p class="form-message" id="itemFormMessage"></p><button class="submit-form mono" type="submit">Place on shelf <span>↗</span></button>
+			</form>
+		</div>
+	</div>
+	<div class="modal-backdrop" id="shopProductsModal" role="dialog" aria-modal="true" aria-labelledby="shopProductsTitle">
+		<div class="modal shop-products-modal">
+			<div class="modal-header"><div><div class="mono">Storefront</div><h2 id="shopProductsTitle">Available products</h2></div><button class="close-modal" id="closeShopProducts" aria-label="Close store products">&times;</button></div>
+			<p class="shop-products-address" id="shopProductsAddress"></p>
+			<div class="shop-products-list" id="shopProductsList" aria-live="polite"></div>
+		</div>
+	</div>
+	<div class="modal-backdrop" id="productDetailModal" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
+		<div class="modal product-detail-modal">
+			<div class="modal-header"><div><div class="mono">Product details</div><h2 id="productDetailTitle">Product</h2></div><button class="close-modal" id="closeProductDetail" aria-label="Close product details">&times;</button></div>
+			<div class="product-detail-content">
+				<img class="product-detail-image" id="productDetailImage" alt="">
+				<div class="product-detail-store mono" id="productDetailStore"></div>
+				<div class="product-detail-price" id="productDetailPrice"></div>
+				<p class="product-detail-discount" id="productDetailDiscount"></p>
+				<div class="product-detail-information"><span class="mono">Additional information</span><p id="productDetailDescription"></p></div>
+				<div class="product-detail-qr" id="productDetailQr"><span class="mono">Pay with vendor UPI</span><img id="productDetailQrImage" alt="Vendor UPI payment QR code"></div>
+				<div class="product-payment-options"><span class="mono">Payment options</span><button class="submit-form mono" id="payWithRazorpay" type="button">Pay with Razorpay <span>↗</span></button><button class="submit-form mono" id="markQrPaid" type="button">I paid by QR <span>↗</span></button><button class="submit-form mono" id="productCod" type="button">Cash on delivery <span>↗</span></button><p id="paymentMessage" role="status"></p></div>
+				<div class="product-detail-reviews"><div class="product-detail-reviews-heading"><span class="mono">Customer reviews</span><strong id="productReviewSummary"></strong></div><div id="productReviewsList" aria-live="polite"><p class="shop-results-status">No reviews yet.</p></div></div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-backdrop" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+		<div class="modal checkout-modal">
+			<div class="modal-header"><div><div class="mono">Secure checkout</div><h2 id="checkoutTitle">Complete your order.</h2></div><button class="close-modal" id="closeCheckout" aria-label="Close checkout">&times;</button></div>
+			<div id="checkoutSummary"></div>
+			<div class="checkout-payment-options" id="checkoutPaymentOptions"><span class="mono">Choose payment method</span><button class="submit-form mono" id="checkoutRazorpay" type="button">Pay with Razorpay <span>↗</span></button><button class="submit-form mono" id="checkoutQrPaid" type="button">I paid by QR <span>↗</span></button><button class="submit-form mono" id="checkoutCod" type="button">Cash on delivery <span>↗</span></button></div>
+		</div>
+	</div>
+	<div class="modal-backdrop delivery-backdrop" id="deliveryModal" role="dialog" aria-modal="true" aria-labelledby="deliveryTitle">
+		<div class="modal checkout-modal delivery-modal">
+			<div class="modal-header"><div><div class="mono">Delivery details</div><h2 id="deliveryTitle">Where should we send it?</h2></div><button class="close-modal" id="closeDelivery" aria-label="Close delivery details">&times;</button></div>
+			<form class="checkout-delivery-form" id="checkoutDeliveryForm"><div class="checkout-delivery-heading"><span class="mono" id="checkoutMethodLabel">Delivery details</span><strong>Required to confirm your order</strong></div><label class="mono" for="checkoutAddress">Delivery address</label><textarea id="checkoutAddress" rows="3" placeholder="House number, street, area, city" required></textarea><label class="mono" for="checkoutPhone">Phone number</label><input id="checkoutPhone" type="tel" placeholder="Your phone number" required><label class="mono" for="checkoutAlternatePhone">Alternate phone number</label><input id="checkoutAlternatePhone" type="tel" placeholder="Another phone number" required><button class="submit-form mono" id="confirmPayment" type="submit">Confirm payment <span>↗</span></button></form><p id="checkoutMessage" role="status"></p>
+		</div>
+	</div>
+	<div class="confirm-payment-dialog" id="confirmPaymentDialog" role="dialog" aria-modal="true" aria-labelledby="confirmPaymentTitle"><div class="confirm-payment-card"><button class="payment-success-close" id="closeConfirmPayment" type="button" aria-label="Close confirmation">&times;</button><div class="mono">Final check</div><h2 id="confirmPaymentTitle">Are you sure?</h2><p>Confirm your payment and delivery details to place this order.</p><div class="confirm-payment-actions"><button class="submit-form mono" id="confirmPaymentYes" type="button">Yes, confirm <span>↗</span></button><button class="secondary-form mono" id="confirmPaymentNo" type="button">No, go back</button></div></div></div>
+	<div class="qr-viewer" id="qrViewer" role="dialog" aria-modal="true" aria-label="Expanded QR code"><button class="qr-viewer-close" id="closeQrViewer" type="button" aria-label="Close QR code">&times;</button><img id="qrViewerImage" alt="Expanded vendor UPI payment QR code"></div>
+	<div class="payment-success" id="paymentSuccess" role="dialog" aria-modal="true" aria-labelledby="paymentSuccessTitle"><div class="payment-success-card"><button class="payment-success-close" id="closePaymentSuccess" type="button" aria-label="Close order confirmation">&times;</button><div class="success-check" aria-hidden="true">&#10003;</div><div class="mono">Payment received</div><h2 id="paymentSuccessTitle">Payment successful.</h2><p>Your order has been added to your order history.</p><div class="review-prompt" id="reviewPrompt"><div class="mono">How was this product?</div><div class="review-stars-input" id="reviewStarsInput" role="group" aria-label="Choose a rating"><button type="button" data-rating="1" aria-label="1 star">&#9733;</button><button type="button" data-rating="2" aria-label="2 stars">&#9733;</button><button type="button" data-rating="3" aria-label="3 stars">&#9733;</button><button type="button" data-rating="4" aria-label="4 stars">&#9733;</button><button type="button" data-rating="5" aria-label="5 stars">&#9733;</button></div><textarea id="reviewComment" rows="3" placeholder="Share your experience..." maxlength="1000"></textarea><p class="form-message" id="reviewMessage"></p><button class="submit-form mono" id="submitReview" type="button">Post review <span>↗</span></button></div><button class="submit-form mono" id="viewOrderHistory" type="button">View order history <span>↗</span></button></div></div>
+	<div class="cart-notice" id="cartNotice" role="status" aria-live="polite"></div>
+	<div class="modal-backdrop" id="profileEditModal" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
+		<div class="modal profile-edit-modal"><div class="modal-header"><div><div class="mono">Private settings</div><h2 id="profileEditTitle">Update your profile.</h2></div><button class="close-modal" id="closeProfileEdit" aria-label="Close profile settings">&times;</button></div><form class="account-form profile-edit-form" id="profileEditForm"><div class="field full"><label class="mono" for="editName">Change name</label><input id="editName" name="editName" type="text" placeholder="Your name"></div><div class="field full"><label class="mono" for="editEmail">Change email</label><input id="editEmail" name="editEmail" type="email" pattern=".+@gmail\.com$" placeholder="you@gmail.com"></div><div class="field"><label class="mono" for="editPhone">Change number</label><input id="editPhone" name="editPhone" type="tel" placeholder="Phone number"></div><div class="field"><label class="mono" for="editCity">Change city</label><input id="editCity" name="editCity" type="text" placeholder="Your city"></div><div class="field full"><label class="mono" for="editVendorAddress">Vendor address</label><input id="editVendorAddress" name="editVendorAddress" type="text" placeholder="Your storefront address"></div><div class="field full"><label class="mono" for="editPassword">Change password</label><input id="editPassword" name="editPassword" type="password" minlength="8" placeholder="New password"></div><div class="field full photo-field"><span class="mono">Change photo</span><label class="photo-upload" for="editPhoto"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Choose a new photo</strong><small id="editPhotoName">Leave unchanged if not replacing</small></span><input id="editPhoto" name="editPhoto" type="file" accept="image/*"></label></div><div class="field full photo-field"><span class="mono">Replace UPI QR</span><label class="photo-upload" for="editUpiQr"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Choose a new QR code photo</strong><small id="editUpiQrName">Leave unchanged if not replacing</small></span><input id="editUpiQr" name="editUpiQr" type="file" accept="image/*"></label></div><p class="form-message" id="profileEditMessage"></p><button class="submit-form mono" type="submit">Save changes <span>↗</span></button></form></div>
+	</div>
+	<div class="modal-backdrop" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+		<div class="modal">
+			<div class="modal-header"><div><div class="mono" id="formRole">Customer account</div><h2 id="formTitle">Welcome to your local.</h2></div><button class="close-modal" id="closeModal" aria-label="Close registration form">&times;</button></div>
+			<form class="account-form" id="accountForm">
+				<div class="field"><label class="mono" for="fullName">Full name</label><input id="fullName" name="fullName" type="text" autocomplete="name" required></div>
+				<div class="field"><label class="mono" for="phone">Phone number</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+				<div class="field full"><label class="mono" for="email">Gmail address</label><input id="email" name="email" type="email" placeholder="you@gmail.com" autocomplete="email" pattern=".+@gmail\.com$" required></div>
+				<div class="field"><label class="mono" for="city">City</label><input id="city" name="city" type="text" autocomplete="address-level2" required></div>
+				<div class="field"><label class="mono" id="passwordLabel" for="password">Set a password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required></div>
+				<div class="field full vendor-only" id="vendorAddressField"><label class="mono" for="vendorAddress">Vendor address</label><input id="vendorAddress" name="vendorAddress" type="text" autocomplete="street-address"></div>
+				<div class="field full vendor-only" id="upiQrField"><span class="mono">UPI PAYMENT</span><label class="photo-upload" for="upiQr"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Add QR code photo</strong><small id="upiQrName">Fampay, GPay, PhonePe, and other UPI apps</small></span><input id="upiQr" name="upiQr" type="file" accept="image/*" required></label></div>
+				<div class="field full photo-field"><span class="mono">Your photo</span><label class="photo-upload" for="photo"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Choose a photo</strong><small id="photoName">No photo selected</small></span><input id="photo" name="photo" type="file" accept="image/*" required></label></div>
+				<p class="form-message" id="formMessage"></p><button class="submit-form mono" type="submit">Create my account <span>↗</span></button><button class="guest-entry mono" id="guestEntry" type="button">Continue as guest</button><button class="account-switch mono" id="accountSwitch" type="button">Already have an account?</button>
+			</form>
+		</div>
+	</div>
+	<div class="page-transition" id="pageTransition" aria-hidden="true"><span class="transition-bag"></span></div>
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	<script src="script.js"></script>
+</body>
+</html>
