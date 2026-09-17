@@ -10,36 +10,34 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<header>
-		<a class="logo" href="#">gKart<i>.</i></a>
-		<div class="header-note mono">A marketplace for your neighborhood</div>
-	</header>
+	<video class="landing-background-video" autoplay muted loop playsinline aria-hidden="true">
+		<source src="/static/hay-bales-field.mp4" type="video/mp4">
+	</video>
 	<main>
 		<section class="intro">
-			<div><h1 class="curved-headline" aria-label="Local things. Real people."><span class="headline-line"><span class="curved-letter">L</span><span class="curved-letter">o</span><span class="curved-letter">c</span><span class="curved-letter">a</span><span class="curved-letter">l</span><span class="curved-letter space"> </span><span class="curved-letter">t</span><span class="curved-letter">h</span><span class="curved-letter">i</span><span class="curved-letter">n</span><span class="curved-letter">g</span><span class="curved-letter">s</span><span class="curved-letter">.</span></span><span class="headline-line"><span class="curved-letter">R</span><span class="curved-letter">e</span><span class="curved-letter">a</span><span class="curved-letter">l</span><span class="curved-letter space"> </span><span class="curved-letter">p</span><span class="curved-letter">e</span><span class="curved-letter">o</span><span class="curved-letter">p</span><span class="curved-letter">l</span><span class="curved-letter">e</span><span class="curved-letter">.</span></span></h1><p class="intro-copy">Discover the makers, growers, and independent shops that give your neighborhood its character.</p></div>
-			<div class="location mono"><span></span> Built for everywhere local</div>
+			<div><h1 class="curved-headline" aria-label="From the farms. to your hands"><span class="headline-line"><span class="curved-letter">F</span><span class="curved-letter">r</span><span class="curved-letter">o</span><span class="curved-letter">m</span><span class="curved-letter space"> </span><span class="curved-letter">t</span><span class="curved-letter">h</span><span class="curved-letter">e</span><span class="curved-letter space"> </span><span class="curved-letter">f</span><span class="curved-letter">a</span><span class="curved-letter">r</span><span class="curved-letter">m</span><span class="curved-letter">s</span><span class="curved-letter">.</span></span><span class="headline-line"><span class="curved-letter">t</span><span class="curved-letter">o</span><span class="curved-letter space"> </span><span class="curved-letter">y</span><span class="curved-letter">o</span><span class="curved-letter">u</span><span class="curved-letter">r</span><span class="curved-letter space"> </span><span class="curved-letter">h</span><span class="curved-letter">a</span><span class="curved-letter">n</span><span class="curved-letter">d</span><span class="curved-letter">s</span></span></h1><p class="intro-copy">Discover makers, growers, and independent shops that fulfills your daily needs</p></div>
 		</section>
 		<section class="choices" aria-labelledby="role-question">
 			<div class="question"><div class="mono">Choose your path</div><strong id="role-question">How would you like to enter?</strong></div>
-			<button class="choice customer" data-role="customer"><div class="shape"></div><h2>I'm a<br>customer.</h2><p>Find thoughtful goods from people making them close to home.</p><span class="choice-arrow">Explore local shops <b>↘</b></span></button>
-			<button class="choice vendor" data-role="vendor"><div class="shape"></div><h2>I'm a<br>vendor.</h2><p>Put your work in front of neighbors who care where it comes from.</p><span class="choice-arrow">Join the marketplace <b>↗</b></span></button>
+			<button class="choice customer" data-role="customer"><div class="shape"></div><h2>I'm a<br>customer.</h2><p>Explore the marketplace</p><span class="choice-arrow">Explore the marketplace <b>↘</b></span></button>
+			<button class="choice vendor" data-role="vendor"><div class="shape"></div><h2>I'm a<br>farmer.</h2><p>Now products are yours and Profit is yours</p><span class="choice-arrow">Join the marketplace <b>↗</b></span></button>
 			<p class="fine-print">You can switch between spaces at any time. No wrong door.</p>
 		</section>
 	</main>
+	<button class="landing-footer-link mono" id="deliveryPartnerLink" type="button">Delivery Partner</button>
 	<section class="guest-view" id="guestView" aria-label="Guest marketplace">
 		<div class="customer-home" id="customerHome" aria-label="Customer home page">
 			<section class="video-intro" id="videoIntro" aria-label="How local orders work">
 				<video class="video-intro-media" autoplay muted loop playsinline poster="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1600" aria-label="Customer ordering on a phone while a vendor prepares the order">
-					<source src="/static/customer-order.mp4" type="video/mp4">
+					<source src="/static/customer-order.mp4?v=20260917" type="video/mp4">
 				</video>
 				<div class="video-intro-shade"></div>
 				<div class="video-intro-copy">
 					<span class="mono">A local order, start to finish</span>
-					<h1>From their phone<br>to your hands.</h1>
-					<p>Customers discover something nearby, place an order, and vendors get the signal to make it happen.</p>
+					<h1>From Aunthentic Source<br>at your doors</h1>
 				</div>
 				<button class="video-intro-next" id="videoIntroNext" type="button" aria-label="Slide video away and enter homepage">
-					<span class="mono">Enter gKart</span><strong aria-hidden="true">&#8594;</strong>
+					<span class="mono">Enter Agrimart</span><strong aria-hidden="true">&#8594;</strong>
 				</button>
 			</section>
 			<nav class="customer-nav" aria-label="Customer navigation">
@@ -51,7 +49,7 @@
 					<a href="#customerReport">Report us</a>
 				</div>
 				<div class="customer-account-menu">
-					<button class="customer-nav-logo logo" id="customerAccountToggle" type="button" aria-expanded="false" aria-controls="customerAccountOptions">gKart<i>.</i></button>
+					<button class="customer-nav-logo logo" id="customerAccountToggle" type="button" aria-expanded="false" aria-controls="customerAccountOptions">Agrimart<i>.</i></button>
 					<div class="customer-account-options" id="customerAccountOptions">
 						<button class="customer-logout mono" id="customerLogout" type="button">Log out</button>
 					</div>
@@ -78,6 +76,20 @@
 					<div class="customer-product-list" id="customerPreferenceList" aria-live="polite"><p class="shop-results-status">Try buying on our store to get recommendations.</p></div>
 					<a class="customer-box-link mono" href="#customerPreferencePage">Explore picks <span aria-hidden="true">&#8594;</span></a>
 				</article>
+				<article class="customer-box organic-box" id="customerOrganic">
+					<div class="customer-box-top"><span class="mono">Grown with care</span><span class="customer-box-mark">✦</span></div>
+					<h2>Organic picks</h2>
+					<p>Products from farmer descriptions that mention organic growing or production.</p>
+					<div class="customer-product-list organic-product-list" id="organicProductList" aria-live="polite"><p class="shop-results-status">Loading organic products...</p></div>
+					<a class="customer-box-link mono" href="#customerOrganicPage">Explore organic picks <span aria-hidden="true">&#8594;</span></a>
+				</article>
+				<article class="customer-box best-sellers-box" id="customerBestSellers">
+					<div class="customer-box-top"><span class="mono">Loved by customers</span><span class="customer-box-mark">★</span></div>
+					<h2>Best sellers</h2>
+					<p>Discover the farmers whose products are selling the most on Agrimart.</p>
+					<div class="customer-product-list best-seller-list" id="bestSellerList" aria-live="polite"><p class="shop-results-status">Loading best sellers...</p></div>
+					<a class="customer-box-link mono" href="#customerBestSellersPage">Explore best sellers <span aria-hidden="true">&#8594;</span></a>
+				</article>
 			</section>
 			<section class="customer-stores-page" id="customerStoresPage" aria-label="All local stores">
 				<div class="customer-offers-header">
@@ -90,6 +102,14 @@
 					<div><span class="mono">Based on your orders</span><h2>Your picks</h2><p>Similar products from other local stores.</p></div>
 				</div>
 				<div class="customer-preference-grid" id="customerPreferencePageList" aria-live="polite"><p class="shop-results-status">Try buying on our store to get recommendations.</p></div>
+			</section>
+			<section class="customer-organic-page" id="customerOrganicPage" aria-label="Organic products">
+				<div class="customer-offers-header"><div><span class="mono">Grown with care</span><h2>Organic picks</h2><p>Explore organic picks and stay even more healthy.</p></div></div>
+				<div class="customer-preference-grid organic-product-page-list" id="organicProductPageList" aria-live="polite"><p class="shop-results-status">Loading organic products...</p></div>
+			</section>
+			<section class="customer-best-sellers-page" id="customerBestSellersPage" aria-label="Best sellers">
+				<div class="customer-offers-header"><div><span class="mono">Loved by customers</span><h2>Best sellers</h2><p>Farmers and products with the strongest sales history.</p></div></div>
+				<div class="customer-preference-grid best-seller-page-list" id="bestSellerPageList" aria-live="polite"><p class="shop-results-status">Loading best sellers...</p></div>
 			</section>
 
 			<section class="customer-offers-page" id="customerOffersPage" aria-label="Customer offers page">
@@ -133,6 +153,10 @@
 					</div>
 					<div class="customer-order-history-list" id="customerOrderHistoryList" aria-live="polite"><p class="shop-results-status">You haven't ordered anything yet... Do check the products.</p></div>
 				</div>
+				<div class="customer-tracking-section">
+					<div class="customer-order-history-header"><span class="mono">Delivery desk</span><h3>Track your orders</h3><p>See the route and delivery partner details once a farmer assigns them.</p></div>
+					<div class="customer-tracking-list" id="customerTrackingList" aria-live="polite"><p class="shop-results-status">Your delivery tracking details will appear here.</p></div>
+				</div>
 			</section>
 			<section class="customer-report-page report-view" id="customerReport" aria-label="Customer report page">
 				<div class="report-heading"><div><div class="mono board-kicker">Support desk</div><h2 id="customerReportTitle">Report a problem</h2><p>Tell us what happened and we will help route it.</p></div></div>
@@ -143,14 +167,22 @@
 			<nav class="static-nav" aria-label="Home page navigation">
 				<span class="static-nav-tag mono">Your local marketplace</span>
 				<div class="static-nav-links">
-					<a class="active" href="#guestView">Home</a>
-					<a href="#salesDashboard">Dashboard</a>
-					<a href="#vendorOrders">Orders <span class="vendor-order-badge" id="vendorOrderBadge" hidden>0</span></a>
-					<a href="#reviews">Reviews</a>
-					<a href="#profile">Profile</a>
+					<a class="active" href="#guestView"><span class="nav-icon">⌂</span><span class="nav-text">Home</span></a>
+					<a href="#salesDashboard"><span class="nav-icon">▣</span><span class="nav-text">Dashboard</span></a>
+					<a href="#vendorOrders"><span class="nav-icon">◫</span><span class="nav-text">Orders</span><span class="vendor-order-badge" id="vendorOrderBadge" hidden>0</span></a>
+					<a href="#reviews"><span class="nav-icon">★</span><span class="nav-text">Reviews</span></a>
+					<div class="nav-more-wrap">
+						<button class="nav-more-toggle" type="button" aria-expanded="false" aria-controls="navMoreMenu">More</button>
+						<div class="nav-more-menu" id="navMoreMenu">
+							<a href="#landAnalysis"><span class="nav-icon">◎</span><span class="nav-text">Land Analysis</span></a>
+							<a href="#raiseIssue"><span class="nav-icon">⚑</span><span class="nav-text">Raise an issue</span></a>
+							<a href="#helpTool"><span class="nav-icon">?</span><span class="nav-text">Help tool</span></a>
+							<a href="#profile"><span class="nav-icon">◉</span><span class="nav-text">Profile</span></a>
+						</div>
+					</div>
 				</div>
 				<div class="vendor-account-menu">
-					<button class="static-nav-logo logo" id="vendorAccountToggle" type="button" aria-expanded="false" aria-controls="vendorAccountOptions">gKart<i>.</i></button>
+					<button class="static-nav-logo logo" id="vendorAccountToggle" type="button" aria-expanded="false" aria-controls="vendorAccountOptions">Agrimart<i>.</i></button>
 					<div class="vendor-account-options" id="vendorAccountOptions">
 						<button class="vendor-report mono" id="vendorReport" type="button">Report</button>
 						<button class="vendor-logout mono" id="vendorLogout" type="button">Log out</button>
@@ -161,16 +193,59 @@
 				<div class="board-heading">
 					<div>
 						<div class="mono board-kicker">Your storefront</div>
-						<h1 id="boardTitle">Make room<br>for good things.</h1>
+						<h1 id="boardTitle">Lets build<br>your Store</h1>
 						<p>Add your products to the shelves below. A photo, price, and optional discount are all you need.</p>
 					</div>
 					<div class="board-count"><strong id="filledCount">0</strong></div>
 				</div>
 				<div class="item-grid" id="itemGrid" aria-label="Product slots"></div>
+				<section class="vendor-news" aria-labelledby="vendorNewsTitle">
+					<div class="vendor-news-heading">
+						<div><div class="mono board-kicker">Field notes</div><h2 id="vendorNewsTitle">Farmer news</h2><p>Fresh agriculture stories and updates from publishers covering farmers in India.</p></div>
+						<a class="vendor-news-source mono" href="https://news.google.com/" target="_blank" rel="noreferrer">Powered by Google News <span aria-hidden="true">↗</span></a>
+					</div>
+					<form class="vendor-news-filter" id="vendorNewsFilter"><label class="mono" for="vendorNewsArea">Your area</label><input id="vendorNewsArea" type="text" maxlength="80" placeholder="City, district, or state"><button class="secondary-form mono" type="submit">Filter news <span>↗</span></button></form>
+					<div class="vendor-news-list" id="vendorNewsList" aria-live="polite"><p class="shop-results-status">Loading farmer news...</p></div>
+				</section>
 			</section>
 			<section class="sales-dashboard" id="salesDashboard" aria-labelledby="salesDashboardTitle">
 				<div class="sales-dashboard-title"><div><div class="mono board-kicker">Vendor analytics</div><h2 id="salesDashboardTitle">Your dashboard</h2></div></div>
 				<div class="kpi-grid"><article><span class="mono">Completed sales</span><strong id="dashboardSales">0</strong><small id="dashboardSalesNote">Paid or delivered orders</small></article><article><span class="mono">Revenue</span><strong id="dashboardRevenue">Rs 0</strong><small id="dashboardRevenueNote">From completed sales</small></article><article><span class="mono">Products listed</span><strong id="dashboardProducts">0</strong><small id="dashboardProductsNote">Items on your shelves</small></article><article><span class="mono">Pending orders</span><strong id="dashboardPending">0</strong><small id="dashboardPendingNote" class="negative">Needs attention</small></article></div>
+			</section>
+			<section class="land-analysis-view" id="landAnalysis" aria-labelledby="landAnalysisTitle">
+				<div class="reviews-heading"><div><div class="mono board-kicker">Farmer guidance</div><h2 id="landAnalysisTitle">Land analysis</h2><p>Share your farm details and get a practical starting point for choosing crops.</p></div></div>
+				<div class="land-analysis-grid">
+					<form class="land-analysis-form" id="landAnalysisForm">
+						<label class="land-photo-upload" for="landPhoto"><span class="land-photo-preview" id="landPhotoPreview">+</span><span><strong>Upload a soil or farm photo</strong><small id="landPhotoName">JPG, PNG, or WEBP</small></span><input id="landPhoto" type="file" accept="image/*" required></label>
+						<label for="landRegion">Region or district<input id="landRegion" type="text" maxlength="100" placeholder="e.g. Nashik, Maharashtra" required></label>
+						<label for="landSeason">Season<select id="landSeason" required><option value="">Choose season</option><option value="kharif">Kharif / monsoon</option><option value="rabi">Rabi / winter</option><option value="zaid">Zaid / summer</option><option value="year-round">Year-round</option></select></label>
+						<label for="landSoilNotes">Soil details<textarea id="landSoilNotes" rows="4" maxlength="600" placeholder="Colour, texture, drainage, irrigation, or anything you already know about the soil."></textarea></label>
+						<p class="land-analysis-note">Photo-based advice is a starting guide. For soil pH and nutrients, confirm with a local soil-test lab.</p>
+						<p class="form-message" id="landAnalysisMessage"></p><button class="submit-form mono" type="submit" id="runLandAnalysis">Suggest crops <span>↗</span></button>
+					</form>
+					<aside class="land-analysis-result" id="landAnalysisResult" aria-live="polite"><div class="mono">Your recommendation</div><h3>Ready when you are.</h3><p>Upload a farm photo and tell us your region and season to see suitable crop options.</p></aside>
+				</div>
+			</section>
+			<section class="raise-issue-view" id="raiseIssue" aria-labelledby="raiseIssueTitle">
+				<div class="reviews-heading"><div><div class="mono board-kicker">Farmer community</div><h2 id="raiseIssueTitle">Raise an issue</h2><p>Ask about government policies, Agrimart policies, price hikes, or anything farmers need to discuss.</p></div></div>
+				<div class="raise-issue-grid">
+					<form class="raise-issue-form" id="raiseIssueForm">
+						<label>Topic<select id="issueCategory"><option>Government policies</option><option>Agrimart policies</option><option>Market prices</option><option>Farming challenges</option><option>Other</option></select></label>
+						<label>Your question<textarea id="issueQuestion" rows="5" maxlength="500" placeholder="What should farmers discuss?" required></textarea></label>
+						<div class="issue-options-heading"><span>Voting options</span><small>Add 2 to 5 choices</small></div>
+						<div class="issue-option-fields" id="issueOptionFields"><input type="text" placeholder="Option 1" maxlength="160" required><input type="text" placeholder="Option 2" maxlength="160" required></div>
+						<button class="secondary-form mono" type="button" id="addIssueOption">Add option <span>+</span></button>
+						<p class="form-message" id="raiseIssueMessage"></p><button class="submit-form mono" type="submit">Post question <span>↗</span></button>
+					</form>
+					<div class="farmer-poll-list" id="farmerPollList" aria-live="polite"><p class="shop-results-status">Loading farmer questions...</p></div>
+				</div>
+			</section>
+			<section class="help-tool-view" id="helpTool" aria-labelledby="helpToolTitle">
+				<div class="reviews-heading"><div><div class="mono board-kicker">Crop safety desk</div><h2 id="helpToolTitle">Help tool</h2><p>Ask about a fertilizer, pesticide, herbicide, or farm chemical before using it.</p></div></div>
+				<div class="help-tool-shell">
+					<form class="help-tool-form" id="helpToolForm"><label for="helpToolQuery">What product do you want to know about?<input id="helpToolQuery" type="text" maxlength="120" placeholder="e.g. urea, DAP, glyphosate" required></label><p class="help-tool-safety-note">Always confirm the exact label, active ingredient, concentration, and local registration before application.</p><p class="form-message" id="helpToolMessage"></p><button class="submit-form mono" type="submit">Check product <span>↗</span></button></form>
+					<article class="help-tool-result" id="helpToolResult" aria-live="polite"><div class="mono">Safety first</div><h3>Ask before you apply.</h3><p>Search a product name to see its use, handling guidance, mixing cautions, and danger warnings.</p></article>
+				</div>
 			</section>
 			<section class="reviews-view" id="reviews" aria-labelledby="reviewsTitle">
 				<div class="reviews-heading"><div><div class="mono board-kicker">Customer voices</div><h2 id="reviewsTitle">Reviews</h2><p>See what customers think about the things you share.</p></div></div>
@@ -180,6 +255,16 @@
 			<section class="vendor-orders-view" id="vendorOrders" aria-labelledby="vendorOrdersTitle">
 				<div class="reviews-heading"><div><div class="mono board-kicker">Customer orders</div><h2 id="vendorOrdersTitle">Orders</h2><p>Confirm cash-on-delivery orders when they are successfully completed.</p></div></div>
 				<div class="vendor-orders-list" id="vendorOrdersList" aria-live="polite"><p class="shop-results-status">No orders yet.</p></div>
+				<div class="vendor-order-footer" id="vendorOrderFooter">
+					<div class="vendor-order-footer-header"><span class="mono">Logistics</span><h3>Assign delivery partner</h3></div>
+					<div class="vendor-order-footer-body">
+						<div class="vendor-order-field vendor-order-picker"><label class="mono" for="vendorFooterOrder">Order</label><select id="vendorFooterOrder"><option value="">No order selected</option></select></div>
+						<div class="vendor-order-field"><label class="mono" for="vendorFooterRoute">Transportation route</label><select id="vendorFooterRoute"><option value="">Select route</option><option>Local pickup</option><option>Village route</option><option>Cold chain route</option><option>Priority dispatch</option></select></div>
+						<div class="vendor-order-field"><label class="mono" for="vendorFooterPartnerFilter">Delivery filter</label><select id="vendorFooterPartnerFilter"><option value="all">All</option><option value="nearby">Nearby</option></select></div>
+						<div class="vendor-order-field"><label class="mono" for="vendorFooterPartner">Assign delivery partner</label><select id="vendorFooterPartner"><option value="Unavailable" selected>Unavailable</option></select></div>
+						<button type="button" class="vendor-order-logistics-button" id="vendorFooterSave">Save logistics</button>
+					</div>
+				</div>
 			</section>
 			<section class="report-view" id="report" aria-labelledby="reportTitle">
 				<div class="report-heading"><div><div class="mono board-kicker">Support desk</div><h2 id="reportTitle">Report a problem</h2><p>Tell us what happened and we will help route it.</p></div></div>
@@ -197,11 +282,21 @@
 			<form class="account-form item-form" id="itemForm">
 				<div class="field full"><label class="mono" for="itemName">Item name</label><input id="itemName" name="itemName" type="text" placeholder="Hand-thrown breakfast mug" required></div>
 				<div class="field"><label class="mono" for="itemPrice">Price</label><input id="itemPrice" name="itemPrice" type="number" min="0" step="0.01" placeholder="24.00" required></div>
+				<div class="field"><label class="mono" for="itemQuantity">Quantity available</label><input id="itemQuantity" name="itemQuantity" type="number" min="0" step="1" placeholder="25" required></div>
 				<div class="field"><label class="mono" for="itemDiscount">Discount <span class="optional">optional</span></label><input id="itemDiscount" name="itemDiscount" type="number" min="0" max="100" step="1" placeholder="10"></div>
 				<div class="field full"><label class="mono" for="itemDescription">Additional information <span class="optional">200 words max</span></label><textarea id="itemDescription" name="itemDescription" rows="4" maxlength="1400" placeholder="Describe your product..."></textarea></div>
 				<div class="field full photo-field"><span class="mono">Product photo</span><label class="photo-upload" for="itemPhoto"><span class="photo-frame" id="photoFrame" aria-hidden="true"><span>+</span></span><span class="photo-upload-copy"><strong>Choose a photo</strong><small id="itemPhotoName">JPG, PNG, or WEBP</small></span><input id="itemPhoto" name="itemPhoto" type="file" accept="image/*" required></label></div>
 				<p class="form-message" id="itemFormMessage"></p><button class="submit-form mono" type="submit">Place on shelf <span>↗</span></button>
 			</form>
+		</div>
+	</div>
+	<div class="modal-backdrop bulk-items-backdrop" id="bulkItemsModal" role="dialog" aria-modal="true" aria-labelledby="bulkItemsTitle">
+		<div class="modal bulk-items-modal">
+			<div class="modal-header"><div><div class="mono">Vendor tools</div><h2 id="bulkItemsTitle">Add items in bulk.</h2><p class="bulk-items-intro">Add a photo, name, and price for each item, then place them on your shelves together.</p></div><button class="close-modal" id="closeBulkItems" type="button" aria-label="Close bulk item page">&times;</button></div>
+						<div class="bulk-items-toolbar"><span class="mono" id="bulkItemsCount">1 item</span><button class="secondary-form mono" id="addBulkItem" type="button">Add another item <span>+</span></button></div>
+			<div class="bulk-items-list" id="bulkItemsList"></div>
+			<p class="form-message" id="bulkItemsMessage"></p>
+			<button class="submit-form mono" id="saveBulkItems" type="button">Save all items <span>↗</span></button>
 		</div>
 	</div>
 	<div class="modal-backdrop" id="shopProductsModal" role="dialog" aria-modal="true" aria-labelledby="shopProductsTitle">
@@ -245,6 +340,20 @@
 	<div class="cart-notice" id="cartNotice" role="status" aria-live="polite"></div>
 	<div class="modal-backdrop" id="profileEditModal" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
 		<div class="modal profile-edit-modal"><div class="modal-header"><div><div class="mono">Private settings</div><h2 id="profileEditTitle">Update your profile.</h2></div><button class="close-modal" id="closeProfileEdit" aria-label="Close profile settings">&times;</button></div><form class="account-form profile-edit-form" id="profileEditForm"><div class="field full"><label class="mono" for="editName">Change name</label><input id="editName" name="editName" type="text" placeholder="Your name"></div><div class="field full"><label class="mono" for="editEmail">Change email</label><input id="editEmail" name="editEmail" type="email" pattern=".+@gmail\.com$" placeholder="you@gmail.com"></div><div class="field"><label class="mono" for="editPhone">Change number</label><input id="editPhone" name="editPhone" type="tel" placeholder="Phone number"></div><div class="field"><label class="mono" for="editCity">Change city</label><input id="editCity" name="editCity" type="text" placeholder="Your city"></div><div class="field full"><label class="mono" for="editVendorAddress">Vendor address</label><input id="editVendorAddress" name="editVendorAddress" type="text" placeholder="Your storefront address"></div><div class="field full"><label class="mono" for="editPassword">Change password</label><input id="editPassword" name="editPassword" type="password" minlength="8" placeholder="New password"></div><div class="field full photo-field"><span class="mono">Change photo</span><label class="photo-upload" for="editPhoto"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Choose a new photo</strong><small id="editPhotoName">Leave unchanged if not replacing</small></span><input id="editPhoto" name="editPhoto" type="file" accept="image/*"></label></div><div class="field full photo-field"><span class="mono">Replace UPI QR</span><label class="photo-upload" for="editUpiQr"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Choose a new QR code photo</strong><small id="editUpiQrName">Leave unchanged if not replacing</small></span><input id="editUpiQr" name="editUpiQr" type="file" accept="image/*"></label></div><p class="form-message" id="profileEditMessage"></p><button class="submit-form mono" type="submit">Save changes <span>↗</span></button></form></div>
+	</div>
+	<div class="modal-backdrop" id="deliveryPartnerModal" role="dialog" aria-modal="true" aria-labelledby="deliveryPartnerTitle">
+		<div class="modal delivery-partner-modal">
+			<div class="modal-header"><div><div class="mono">Join our network</div><h2 id="deliveryPartnerTitle">Delivery partner</h2></div><button class="close-modal" id="closeDeliveryPartner" aria-label="Close delivery partner form">&times;</button></div>
+			<form class="delivery-partner-form" id="deliveryPartnerForm">
+				<div class="field"><label class="mono" for="deliveryPartnerName">Full name</label><input id="deliveryPartnerName" name="deliveryPartnerName" type="text" placeholder="Your name" required></div>
+				<div class="field"><label class="mono" for="deliveryPartnerPhone">Phone number</label><input id="deliveryPartnerPhone" name="deliveryPartnerPhone" type="tel" placeholder="Phone number" required></div>
+				<div class="field full"><label class="mono" for="deliveryPartnerAddress">Address</label><textarea id="deliveryPartnerAddress" name="deliveryPartnerAddress" rows="3" placeholder="House number, street, area, city" required></textarea></div>
+				<div class="field full photo-field"><span class="mono">Your photo</span><label class="photo-upload" for="deliveryPartnerPhoto"><span class="bag-icon" aria-hidden="true"></span><span class="photo-upload-copy"><strong>Choose a photo</strong><small id="deliveryPartnerPhotoName">No photo selected</small></span><input id="deliveryPartnerPhoto" name="deliveryPartnerPhoto" type="file" accept="image/*" required></label></div>
+				<div class="field full"><label class="mono" for="deliveryPartnerOption">Service option</label><select id="deliveryPartnerOption" name="deliveryPartnerOption" required><option value="">Choose an option</option><option>AgriKart Riders</option><option>GreenRoute Logistics</option><option>FarmLink Express</option><option>Local Drop</option></select></div>
+				<p class="form-message" id="deliveryPartnerMessage"></p>
+				<button class="submit-form mono" type="submit">Join as delivery partner <span>↗</span></button>
+			</form>
+		</div>
 	</div>
 	<div class="modal-backdrop" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
 		<div class="modal">

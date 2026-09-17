@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: gkart
+    name: agrimart
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -10,11 +10,11 @@ services:
         value: production
       - key: DATABASE_URL
         fromDatabase:
-          name: gkart-db
+          name: agrimart-db
           property: connectionString
 
 databases:
-  - name: gkart-db
-    databaseName: gkart
-    user: gkart
+  - name: agrimart-db
+    databaseName: agrimart
+    user: agrimart
     plan: free

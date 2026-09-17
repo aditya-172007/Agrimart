@@ -1,7 +1,11 @@
 import os
+import json
 import razorpay
 import qrcode
 import base64
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ElementTree
 from io import BytesIO
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
@@ -10,10 +14,55 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gkart.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///agrimart.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 razorpay_client = razorpay.Client(auth=(os.getenv('RAZORPAY_KEY_ID', ''), os.getenv('RAZORPAY_KEY_SECRET', '')))
+
+def validate_product_image(photo, product_name):
+    api_key = os.getenv('GEMINI_API_KEY', '').strip()
+    if not api_key:
+        return True, None
+    if not isinstance(photo, str) or not photo.startswith('data:image/') or ',' not in photo:
+        return False, 'Product photo must be a valid image.'
+
+    header, encoded_image = photo.split(',', 1)
+    mime_type = header.split(';', 1)[0].replace('data:', '')
+    prompt = (
+        'You are verifying a marketplace product photo. Decide whether the main visible subject '
+        f'matches the product named "{product_name.strip()}". Be especially strict for fruits '
+        'and vegetables: a tomato photo must not pass for onion, and so on. Ignore text labels, '
+        'filenames, background objects, and packaging. Return only JSON in this exact shape: '
+        '{"matches": true or false, "confidence": number from 0 to 1}. '
+        'Set matches false when the image is unrelated, ambiguous, or shows a different produce item.'
+    )
+    endpoint = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
+    url = f'https://generativelanguage.googleapis.com/v1beta/models/{endpoint}:generateContent?key={api_key}'
+    payload = {
+        'contents': [{
+            'parts': [
+                {'text': prompt},
+                {'inline_data': {'mime_type': mime_type, 'data': encoded_image}},
+            ]
+        }],
+        'generationConfig': {'temperature': 0, 'responseMimeType': 'application/json'},
+    }
+    try:
+        vision_request = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode('utf-8'),
+            headers={'Content-Type': 'application/json'},
+            method='POST',
+        )
+        with urllib.request.urlopen(vision_request, timeout=20) as response:
+            result = json.loads(response.read())
+        response_text = result['candidates'][0]['content']['parts'][0]['text'].strip()
+        decision = json.loads(response_text)
+        if not decision.get('matches') or float(decision.get('confidence', 0)) < 0.75:
+            return False, f'The photo does not clearly match "{product_name.strip()}". Please upload the correct produce photo.'
+        return True, None
+    except Exception:
+        return False, 'Image verification is temporarily unavailable. Please try again.'
 
 
 class Account(db.Model):
@@ -37,6 +86,7 @@ class Product(db.Model):
     slot = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(160), nullable=False)
     price = db.Column(db.Float, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=0)
     discount = db.Column(db.Float, nullable=False, default=0)
     description = db.Column(db.Text, nullable=False, default='')
     photo = db.Column(db.Text, nullable=False)
@@ -61,6 +111,8 @@ class Order(db.Model):
     delivery_address = db.Column(db.Text, nullable=True)
     phone = db.Column(db.String(30), nullable=True)
     alternate_phone = db.Column(db.String(30), nullable=True)
+    transportation_route = db.Column(db.String(120), nullable=False, default='')
+    delivery_partner = db.Column(db.String(120), nullable=False, default='')
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
 
 
@@ -76,6 +128,30 @@ class Review(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     product = db.relationship('Product')
     __table_args__ = (db.UniqueConstraint('customer_id', 'product_id', name='unique_customer_product_review'),)
+
+
+class FarmerPoll(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False, index=True)
+    author_name = db.Column(db.String(120), nullable=False)
+    category = db.Column(db.String(40), nullable=False, default='Other')
+    question = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
+    options = db.relationship('FarmerPollOption', backref='poll', cascade='all, delete-orphan', lazy=True, order_by='FarmerPollOption.id')
+
+
+class FarmerPollOption(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    poll_id = db.Column(db.Integer, db.ForeignKey('farmer_poll.id'), nullable=False, index=True)
+    label = db.Column(db.String(160), nullable=False)
+    votes = db.Column(db.Integer, nullable=False, default=0)
+
+
+class FarmerPollVote(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    poll_id = db.Column(db.Integer, db.ForeignKey('farmer_poll.id'), nullable=False, index=True)
+    voter_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False, index=True)
+    __table_args__ = (db.UniqueConstraint('poll_id', 'voter_id', name='unique_farmer_poll_vote'),)
 
 
 with app.app_context():
@@ -100,6 +176,8 @@ with app.app_context():
         db.session.execute(text('ALTER TABLE account ADD COLUMN upi_id VARCHAR(120)'))
     if 'description' not in product_columns:
         db.session.execute(text("ALTER TABLE product ADD COLUMN description TEXT NOT NULL DEFAULT ''"))
+    if 'quantity' not in product_columns:
+        db.session.execute(text('ALTER TABLE product ADD COLUMN quantity INTEGER NOT NULL DEFAULT 0'))
     order_columns = {column['name'] for column in inspector.get_columns('order')}
     if 'delivery_address' not in order_columns:
         db.session.execute(text('ALTER TABLE "order" ADD COLUMN delivery_address TEXT'))
@@ -117,6 +195,10 @@ with app.app_context():
         db.session.execute(text('ALTER TABLE "order" ADD COLUMN vendor_payout FLOAT NOT NULL DEFAULT 0'))
     if 'payment_reference' not in order_columns:
         db.session.execute(text('ALTER TABLE "order" ADD COLUMN payment_reference VARCHAR(120)'))
+    if 'transportation_route' not in order_columns:
+        db.session.execute(text('ALTER TABLE "order" ADD COLUMN transportation_route VARCHAR(120) NOT NULL DEFAULT ""'))
+    if 'delivery_partner' not in order_columns:
+        db.session.execute(text('ALTER TABLE "order" ADD COLUMN delivery_partner VARCHAR(120) NOT NULL DEFAULT ""'))
     db.session.commit()
 
 
@@ -143,6 +225,7 @@ def product_response(product):
         'storeName': product.vendor.full_name,
         'name': product.name,
         'price': product.price,
+        'quantity': product.quantity or 0,
         'discount': product.discount,
         'photo': product.photo,
         'description': product.description or '',
@@ -168,6 +251,30 @@ def review_response(review):
 
 def order_response(order):
     product = Product.query.get(order.product_id)
+    partner_profiles = {
+        'AgriKart Riders': {
+            'phone': '+91 90000 12001',
+            'photo': 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=160&q=80',
+            'address': 'Market yard dispatch hub, Nashik',
+        },
+        'GreenRoute Logistics': {
+            'phone': '+91 90000 12002',
+            'photo': 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=160&q=80',
+            'address': 'GreenRoute center, Pune',
+        },
+        'FarmLink Express': {
+            'phone': '+91 90000 12003',
+            'photo': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=160&q=80',
+            'address': 'FarmLink depot, Ahmednagar',
+        },
+        'Local Drop': {
+            'phone': '+91 90000 12004',
+            'photo': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80',
+            'address': 'Local delivery desk, your district',
+        },
+    }
+    partner = partner_profiles.get(order.delivery_partner, {})
+    partner_address = partner.get('address', 'Delivery partner will be assigned soon')
     return {
         'id': order.id,
         'customerId': order.customer_id,
@@ -185,6 +292,13 @@ def order_response(order):
         'deliveryAddress': order.delivery_address or '',
         'phone': order.phone or '',
         'alternatePhone': order.alternate_phone or '',
+        'transportationRoute': order.transportation_route or '',
+        'deliveryPartner': order.delivery_partner or '',
+        'deliveryPartnerPhone': partner.get('phone', 'Will appear after assignment'),
+        'deliveryPartnerPhoto': partner.get('photo', ''),
+        'deliveryPartnerAddress': partner_address,
+        'deliveryPartnerMapUrl': f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(partner_address)}" if order.delivery_partner else '',
+        'deliveryPartnerLiveLocation': None,
         'createdAt': order.created_at.isoformat() if order.created_at else '',
     }
 
@@ -324,14 +438,19 @@ def save_vendor_product():
     try:
         slot = int(data['slot'])
         price = float(data['price'])
+        quantity = int(data.get('quantity') or 0)
         discount = float(data.get('discount') or 0)
     except (TypeError, ValueError):
-        return jsonify({'error': 'Product slot, price, and discount must be numbers.'}), 400
-    if price < 0 or discount < 0 or discount > 100:
-        return jsonify({'error': 'Price and discount values are invalid.'}), 400
+        return jsonify({'error': 'Product slot, price, quantity, and discount must be numbers.'}), 400
+    if price < 0 or quantity < 0 or discount < 0 or discount > 100:
+        return jsonify({'error': 'Price, quantity, and discount values are invalid.'}), 400
     description = str(data.get('description', '')).strip()
     if len(description.split()) > 200:
         return jsonify({'error': 'Product description must be 200 words or fewer.'}), 400
+
+    image_matches, image_error = validate_product_image(data['photo'], data['name'])
+    if not image_matches:
+        return jsonify({'error': image_error}), 422
 
     product = Product.query.filter_by(vendor_id=account.id, slot=slot).first()
     if not product:
@@ -339,6 +458,7 @@ def save_vendor_product():
         db.session.add(product)
     product.name = str(data['name']).strip()
     product.price = price
+    product.quantity = quantity
     product.discount = discount
     product.photo = data['photo']
     product.description = description
@@ -391,7 +511,7 @@ def create_razorpay_order():
         return jsonify({'error': 'Payment amount is invalid.'}), 400
     if amount <= 0:
         return jsonify({'error': 'Payment amount must be greater than zero.'}), 400
-    order = razorpay_client.order.create({'amount': amount, 'currency': 'INR', 'receipt': f"gkart_{data.get('productId', 'order')}", 'notes': {'platform': 'gKart', 'customer_id': str(data.get('customerId', ''))}})
+    order = razorpay_client.order.create({'amount': amount, 'currency': 'INR', 'receipt': f"agrimart_{data.get('productId', 'order')}", 'notes': {'platform': 'Agrimart', 'customer_id': str(data.get('customerId', ''))}})
     return jsonify({'order': order, 'keyId': os.getenv('RAZORPAY_KEY_ID')}), 201
 
 
@@ -469,18 +589,31 @@ def update_vendor_order(order_id):
     vendor = Account.query.filter_by(id=request.args.get('accountId'), role='vendor').first()
     data = request.get_json(silent=True) or {}
     status = data.get('status')
+    transportation_route = data.get('transportationRoute')
+    delivery_partner = data.get('deliveryPartner')
     order = Order.query.get(order_id)
     product = Product.query.get(order.product_id) if order else None
     if not vendor or not order or not product or product.vendor_id != vendor.id:
         return jsonify({'error': 'Order not found or unauthorized.'}), 404
-    if status not in ('paid', 'delivered', 'cancelled'):
-        return jsonify({'error': 'Order status must be paid, delivered, or cancelled.'}), 400
-    order.status = status
-    if status == 'delivered':
-        order.payment_status = 'paid'
-        order.settlement_status = 'released'
-    elif status == 'cancelled':
-        order.settlement_status = 'cancelled'
+
+    if status is not None:
+        if status not in ('paid', 'delivered', 'cancelled'):
+            return jsonify({'error': 'Order status must be paid, delivered, or cancelled.'}), 400
+        order.status = status
+        if status == 'delivered':
+            order.payment_status = 'paid'
+            order.settlement_status = 'released'
+        elif status == 'cancelled':
+            order.settlement_status = 'cancelled'
+
+    if transportation_route is not None:
+        order.transportation_route = str(transportation_route).strip()
+    if delivery_partner is not None:
+        order.delivery_partner = str(delivery_partner).strip()
+
+    if status is None and transportation_route is None and delivery_partner is None:
+        return jsonify({'error': 'No order update was provided.'}), 400
+
     db.session.commit()
     return jsonify({'order': order_response(order)}), 200
 
@@ -574,7 +707,7 @@ def get_customer_recommendations():
 def create_upi_qr():
     data = request.get_json(silent=True) or {}
     upi_id = str(data.get('upiId', '')).strip()
-    name = str(data.get('name', 'gKart vendor')).strip()[:80]
+    name = str(data.get('name', 'Agrimart vendor')).strip()[:80]
     try:
         amount = float(data.get('amount', 0))
     except (TypeError, ValueError):
@@ -593,6 +726,225 @@ def create_upi_qr():
 def get_shop_offers():
     products = Product.query.join(Account).filter(Product.discount > 0, Account.role == 'vendor').order_by(Product.id).all()
     return jsonify({'offers': [product_response(product) for product in products]}), 200
+
+
+@app.get('/api/products/organic')
+def get_organic_products():
+    products = Product.query.join(Account).filter(
+        Account.role == 'vendor',
+        Product.description.ilike('%organic%'),
+    ).order_by(Product.id.desc()).limit(12).all()
+    return jsonify({'products': [product_response(product) for product in products]}), 200
+
+
+@app.get('/api/products/best-sellers')
+def get_best_sellers():
+    sold_count = func.count(Order.id).label('soldCount')
+    rows = db.session.query(Product, sold_count).select_from(Product).join(Account, Product.vendor_id == Account.id).outerjoin(
+        Order, (Order.product_id == Product.id) & (Order.status != 'cancelled')
+    ).filter(Account.role == 'vendor').group_by(Product.id).order_by(sold_count.desc(), Product.id.desc()).limit(12).all()
+    products = []
+    for product, count in rows:
+        item = product_response(product)
+        item['soldCount'] = int(count or 0)
+        products.append(item)
+    return jsonify({'products': products}), 200
+
+
+@app.get('/api/news/farmers')
+def get_farmer_news():
+    area = request.args.get('area', '').strip()[:80]
+    search_terms = f'farmers agriculture {area}' if area else 'farmers agriculture India'
+    query = urllib.parse.quote(search_terms)
+    feed_url = f'https://news.google.com/rss/search?q={query}&hl=en-IN&gl=IN&ceid=IN:en'
+    try:
+        feed_request = urllib.request.Request(feed_url, headers={'User-Agent': 'Agrimart farmer news reader/1.0'})
+        with urllib.request.urlopen(feed_request, timeout=8) as response:
+            feed = ElementTree.fromstring(response.read())
+    except Exception:
+        return jsonify({'error': 'Farmer news is temporarily unavailable.'}), 502
+
+    articles = []
+    for item in feed.findall('./channel/item')[:6]:
+        title = (item.findtext('title') or '').strip()
+        link = (item.findtext('link') or '').strip()
+        if not title or not link:
+            continue
+        source = item.find('source')
+        articles.append({
+            'title': title,
+            'link': link,
+            'source': (source.text or '').strip() if source is not None else 'Google News',
+            'published': (item.findtext('pubDate') or '').strip(),
+        })
+    return jsonify({'area': area or 'India', 'articles': articles}), 200
+
+
+@app.post('/api/land-analysis')
+def land_analysis():
+    data = request.get_json(silent=True) or {}
+    region = str(data.get('region', '')).strip()
+    season = str(data.get('season', '')).strip().lower()
+    soil_notes = str(data.get('soilNotes', '')).strip()
+    photo = data.get('photo', '')
+    if not region or season not in {'kharif', 'rabi', 'zaid', 'year-round'} or not photo.startswith('data:image/'):
+        return jsonify({'error': 'Please provide a farm photo, region, and season.'}), 400
+
+    soil_text = soil_notes.casefold()
+    if season == 'kharif':
+        crops = ['Paddy', 'Soybean', 'Maize', 'Pearl millet']
+        timing = 'Sow with the first dependable monsoon moisture and keep drainage channels open.'
+    elif season == 'rabi':
+        crops = ['Wheat', 'Chickpea', 'Mustard', 'Onion']
+        timing = 'Prepare a fine seedbed after the monsoon and plan irrigation around early growth.'
+    elif season == 'zaid':
+        crops = ['Watermelon', 'Cucumber', 'Moong bean', 'Summer vegetables']
+        timing = 'Choose a short-duration crop and confirm reliable irrigation before planting.'
+    else:
+        crops = ['Tomato', 'Okra', 'Chilli', 'Leafy vegetables']
+        timing = 'Stagger sowing dates and select crops around water availability and local demand.'
+
+    if any(word in soil_text for word in ('sandy', 'loose', 'well drained')):
+        crops = ['Groundnut', 'Watermelon', *crops[:2]]
+        soil_tip = 'The notes suggest lighter, well-drained soil. Add organic matter and monitor moisture closely.'
+    elif any(word in soil_text for word in ('clay', 'heavy', 'sticky')):
+        crops = ['Paddy', 'Chickpea', *crops[:2]]
+        soil_tip = 'The notes suggest heavier soil. Improve drainage and avoid working the field when it is waterlogged.'
+    elif any(word in soil_text for word in ('black', 'cotton')):
+        crops = ['Soybean', 'Cotton', *crops[:2]]
+        soil_tip = 'Black soil can hold moisture well. Use drainage during heavy rain and avoid over-irrigation.'
+    else:
+        soil_tip = 'Add a soil-test result when available so pH, nitrogen, phosphorus, and potassium can refine this advice.'
+
+    return jsonify({
+        'region': region,
+        'season': season,
+        'photoReceived': True,
+        'crops': list(dict.fromkeys(crops))[:4],
+        'timing': timing,
+        'soilTip': soil_tip,
+        'disclaimer': 'This is a practical first recommendation, not a laboratory soil diagnosis. Confirm locally before investing in seed or fertilizer.',
+    }), 200
+
+
+def farmer_poll_response(poll, voter_id=None):
+    has_voted = bool(voter_id and FarmerPollVote.query.filter_by(poll_id=poll.id, voter_id=voter_id).first())
+    return {
+        'id': poll.id,
+        'authorName': poll.author_name,
+        'category': poll.category,
+        'question': poll.question,
+        'createdAt': poll.created_at.isoformat() if poll.created_at else '',
+        'hasVoted': has_voted,
+        'options': [{'id': option.id, 'label': option.label, 'votes': option.votes} for option in poll.options],
+    }
+
+
+@app.get('/api/farmer-polls')
+def get_farmer_polls():
+    voter_id = request.args.get('farmerId', type=int)
+    polls = FarmerPoll.query.order_by(FarmerPoll.created_at.desc(), FarmerPoll.id.desc()).limit(30).all()
+    return jsonify({'polls': [farmer_poll_response(poll, voter_id) for poll in polls]}), 200
+
+
+@app.post('/api/farmer-polls')
+def create_farmer_poll():
+    data = request.get_json(silent=True) or {}
+    farmer = Account.query.filter_by(id=data.get('farmerId'), role='vendor').first()
+    question = str(data.get('question', '')).strip()
+    category = str(data.get('category', 'Other')).strip()[:40] or 'Other'
+    options = [str(option).strip() for option in data.get('options', []) if str(option).strip()]
+    if not farmer:
+        return jsonify({'error': 'Only signed-in farmers can raise an issue.'}), 403
+    if len(question) < 10 or len(question) > 500:
+        return jsonify({'error': 'Your question must be between 10 and 500 characters.'}), 400
+    if len(options) < 2 or len(options) > 5 or len(set(option.casefold() for option in options)) != len(options):
+        return jsonify({'error': 'Add between 2 and 5 different voting options.'}), 400
+    poll = FarmerPoll(author_id=farmer.id, author_name=farmer.full_name, category=category, question=question)
+    poll.options = [FarmerPollOption(label=option) for option in options]
+    db.session.add(poll)
+    db.session.commit()
+    return jsonify({'poll': farmer_poll_response(poll, farmer.id)}), 201
+
+
+@app.post('/api/farmer-polls/<int:poll_id>/vote')
+def vote_farmer_poll(poll_id):
+    data = request.get_json(silent=True) or {}
+    farmer = Account.query.filter_by(id=data.get('farmerId'), role='vendor').first()
+    poll = FarmerPoll.query.get(poll_id)
+    option = FarmerPollOption.query.filter_by(id=data.get('optionId'), poll_id=poll_id).first()
+    if not farmer or not poll or not option:
+        return jsonify({'error': 'That poll or option is unavailable.'}), 404
+    if FarmerPollVote.query.filter_by(poll_id=poll.id, voter_id=farmer.id).first():
+        return jsonify({'error': 'You have already voted on this question.'}), 409
+    option.votes += 1
+    db.session.add(FarmerPollVote(poll_id=poll.id, voter_id=farmer.id))
+    db.session.commit()
+    return jsonify({'poll': farmer_poll_response(poll, farmer.id)}), 200
+
+
+@app.post('/api/farmer-help')
+def farmer_help():
+    data = request.get_json(silent=True) or {}
+    query = str(data.get('query', '')).strip()
+    if len(query) < 2 or len(query) > 120:
+        return jsonify({'error': 'Enter the name of a fertilizer, pesticide, herbicide, or farm chemical.'}), 400
+
+    profiles = {
+        'urea': {
+            'name': 'Urea', 'type': 'Nitrogen fertilizer',
+            'uses': 'Supplies nitrogen for leafy growth and is commonly used as a top dressing.',
+            'guidance': 'Use only the rate recommended by your soil test, crop label, or local agriculture officer. Apply to moist soil and avoid leaving granules on leaves.',
+            'warnings': 'Overuse can burn crops, increase nitrate loss, and pollute water. Store dry and keep away from children, animals, heat, and flames.',
+            'mixing': 'Do not mix and store urea with seeds or alkaline materials. Avoid applying immediately before heavy rain.',
+        },
+        'dap': {
+            'name': 'DAP (18-46-0)', 'type': 'Nitrogen and phosphorus fertilizer',
+            'uses': 'Provides starter nitrogen and phosphorus for root development.',
+            'guidance': 'Use a soil-test-based dose and place it near, not directly on, seed or roots. Do not add extra phosphorus without a soil need.',
+            'warnings': 'Can damage seed and roots when concentrated. Keep dry, sealed, and away from children and livestock.',
+            'mixing': 'Do not mix in the same tank with strongly alkaline products unless the product label confirms compatibility.',
+        },
+        'mop': {
+            'name': 'MOP (Muriate of potash)', 'type': 'Potassium fertilizer',
+            'uses': 'Supplies potassium and is suitable for many field crops where chloride is tolerated.',
+            'guidance': 'Apply only when soil or crop needs potassium. Use local crop recommendations for dose and timing.',
+            'warnings': 'Excess chloride or over-application can harm chloride-sensitive crops and soil balance. Keep away from moisture.',
+            'mixing': 'Follow the package label before blending with other fertilizers; do not improvise concentrated mixtures.',
+        },
+        'glyphosate': {
+            'name': 'Glyphosate', 'type': 'Herbicide',
+            'uses': 'A non-selective herbicide used for weed control only where legally permitted and label-approved.',
+            'guidance': 'Use the registered product label for the crop, dose, protective equipment, wind limits, and waiting period. Never spray a food crop unless its label allows it.',
+            'warnings': 'Dangerous if misused. Avoid skin, eye, and inhalation exposure; keep people and animals away from spray and wash contaminated clothing. Follow local law and the label.',
+            'mixing': 'Never mix with another chemical unless the label or a qualified agronomist confirms compatibility.',
+        },
+        'paraquat': {
+            'name': 'Paraquat', 'type': 'Highly hazardous herbicide',
+            'uses': 'A restricted herbicide in many places and not a product to use without legally required training and controls.',
+            'guidance': 'Do not use based on general internet advice. Contact a licensed agricultural professional and follow current local regulations.',
+            'warnings': 'Extremely dangerous if swallowed, inhaled, or absorbed through skin. Keep locked away and seek emergency medical help after exposure. Never transfer it to another container.',
+            'mixing': 'Do not mix with any product unless the registered label and a trained professional explicitly allow it.',
+        },
+    }
+    key = query.casefold().replace('-', ' ').strip()
+    profile = next((value for name, value in profiles.items() if name in key), None)
+    if profile:
+        return jsonify({'found': True, 'verified': True, 'query': query, 'profile': profile, 'source': 'Agrimart safety knowledge base'}), 200
+    return jsonify({
+        'found': False,
+        'verified': False,
+        'query': query,
+        'profile': {
+            'name': query,
+            'type': 'Product not verified',
+            'uses': 'No verified product profile was found for this name.',
+            'guidance': 'Check the exact label, active ingredient, registration number, crop, and concentration. Ask a local agriculture officer before use.',
+            'warnings': 'Do not apply, mix, taste, transfer, or handle an unidentified chemical. Keep it sealed and away from people, animals, food, and water.',
+            'mixing': 'No mixing advice is safe until the exact product and active ingredient are confirmed.',
+        },
+        'source': 'Agrimart safety guidance',
+    }), 200
 
 
 @app.route("/")
